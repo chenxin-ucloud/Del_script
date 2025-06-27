@@ -1,0 +1,2 @@
+# Del_script
+CleanResource
