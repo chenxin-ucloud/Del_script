@@ -1,4 +1,5 @@
-*.txt
+header.txt
+token.txt
 __pycache__/
 *.pyc
 region.json
