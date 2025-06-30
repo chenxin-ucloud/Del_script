@@ -21,47 +21,12 @@ ZONE=$3
 start() {
 	# 提取 UGN 列表
 	echo "正在查询 UGN 列表..."
-	timestamp=$(date +%s)000
-	
+	timestamp=$(date +%s)000	
 	offset=0
 	limit=100
-	all_ugns=""
-	
-	# while true; do
-	# 	# 执行请求
-	# 	response=$(curl -X POST 'https://api.ucloud.cn/?Action=ListUGN' \
-	# 		"${COMMON_HEADERS[@]}" \
-	# 		-H 'Content-Type: application/json' \
-	# 		--data-raw "{\"ProjectId\":\"${PROJECT_ID}\",\"Zone\":\"${ZONE}\",\"Region\":\"${REGION}\",\"Limit\":${limit},\"Offset\":${offset},\"Action\":\"ListUGN\",\"_timestamp\":${timestamp}}")
-
-	# 	if ! echo "$response" | jq empty; then
-	# 		echo "查询 UGN 列表失败: $response"
-	# 		exit 0
-	# 	fi
-
-	# 	# Check if DataSet field exists
-	# 	if ! echo "$response" | jq -e '.UGNs' > /dev/null; then
-	# 		echo "UGNs 字段不存在"
-	# 		break
-	# 	fi
-
-	# 	# Get current batch of UGNs
-	# 	current_ugns=$(echo "$response" | jq -r '.UGNs[].UGNID')
-
-	# 	# If no UGNs returned, break the loop
-	# 	if [ -z "$current_ugns" ]; then
-	# 		break
-	# 	fi
-
-	# 	# Append current UGNs to all_ugns
-	# 	all_ugns="${all_ugns}${current_ugns}\n"
-		
-	# 	# Increment offset for next batch
-	# 	offset=$((offset + limit))
-	# done
-	while true; do
-		# 执行请求
-		response=$(curl -X POST 'https://api.ucloud.cn/?Action=ListUGN' \
+	all_ugns=""		
+	# 执行请求
+	response=$(curl -X POST 'https://api.ucloud.cn/?Action=ListUGN' \
 			"${COMMON_HEADERS[@]}" \
 			-H 'Content-Type: application/json' \
 			--data-raw "{\"ProjectId\":\"${PROJECT_ID}\",\"Zone\":\"${ZONE}\",\"Region\":\"${REGION}\",\"Limit\":${limit},\"Offset\":${offset},\"Action\":\"ListUGN\",\"_timestamp\":${timestamp}}")
@@ -87,11 +52,6 @@ start() {
 
 		# Append current UGNs to all_ugns with proper newline separation
 		all_ugns="${all_ugns}$(echo -e "$current_ugns\n")"
-		
-		# Increment offset for next batch
-		offset=$((offset + limit))
-	done
-
 	# Remove empty lines and duplicates
 	ugns=$(echo -e "$all_ugns" | grep . | sort -u)
 

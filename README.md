@@ -17,12 +17,12 @@ pip3 install requests
 3. **解绑 UGN 和 VPC**：
     切换到 `Del_script` 目录，在终端中执行以下命令，等待 UGN 和 VPC 解绑完成：
 ```bash
-bash unbind_command.sh
+bash ./ugn_unbind_vpc.sh org-n4wmt0 hk hk-02
 ```
 4. **删除 UGN**：
     在终端执行以下命令，等待 UGN 删除完成：
 ```bash
-bash del_command.sh
+bash ./del_ugn.sh org-n4wmt0 hk hk-02
 ```
 5. **删除 UHost 等资源**：
     在终端执行以下命令，等待 UHost 等资源删除完成：
