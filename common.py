@@ -18,11 +18,6 @@ def get_common_headers():
     }
     return common_headers
 
-# URL编码函数
-def urlencode(s):
-    import urllib.parse
-    return urllib.parse.quote(s)
-
 # 执行POST请求
 def post_request(url, data, headers):
     try:
