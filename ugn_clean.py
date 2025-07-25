@@ -90,7 +90,7 @@ def detach_networks(ugnid, networks):
     except Exception:
         print(f"解绑请求异常: {resp.text}")
 
-def del_ugn(ugnid):
+def del_ugn(ugnid, retry=3):
     url = 'https://api.ucloud.cn/?Action=DelUGN'
     payload = {
         "ProjectId": PROJECT_ID,
@@ -100,15 +100,21 @@ def del_ugn(ugnid):
         "Action": "DelUGN",
         "_timestamp": int(time.time() * 1000)
     }
-    resp = requests.post(url, headers=get_common_headers(), json=payload)
-    try:
-        data = resp.json()
-        if data.get('RetCode', 0) != 0:
-            print(f"删除失败: {ugnid}, 返回: {data}")
-        else:
-            print(f"UGN {ugnid} 删除成功")
-    except Exception:
-        print(f"删除请求异常: {ugnid}, {resp.text}")        
+    for attempt in range(1, retry + 1):
+        resp = requests.post(url, headers=get_common_headers(), json=payload)
+        try:
+            data = resp.json()
+            if data.get('RetCode', 0) == 0:
+                print(f"UGN {ugnid} 删除成功")
+                return True
+            else:
+                print(f"删除失败: {ugnid}, 返回: {data}，第{attempt}次重试")
+                time.sleep(2)
+        except Exception:
+            print(f"删除请求异常: {ugnid}, {resp.text}，第{attempt}次重试")
+            time.sleep(2)
+    print(f"UGN {ugnid} 删除最终失败，请手动检查！")
+    return False       
 
 def main():
     ugns = list_ugns()
